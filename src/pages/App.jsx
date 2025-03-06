@@ -12,6 +12,8 @@ import EmailView from './EmailView';
 import ProfileView from './ProfileView';
 import Layout from '../components/Layout'
 
+import ErrorPage from './ErrorPage';
+
 import "../App.css"
 
 function App() {
@@ -67,6 +69,8 @@ function App() {
           <Route path="email/:id" element={<EmailView />} />
           <Route path="profile/:id" element={<ProfileView />} />
         </Route>
+
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   );
