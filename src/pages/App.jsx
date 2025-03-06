@@ -62,8 +62,8 @@ function App() {
             <Layout />
           </ProtectedRoute>
         }>
-          <Route index element={<Dashboard />} />
-          {/* <Route path="inbox" element={<Inbox />} /> */}
+          <Route index element={<Inbox />} />
+          {/* Vi beholder EmailView-ruten for kompatibilitet, men hovedinteraksjonen vil være i Inbox */}
           <Route path="email/:id" element={<EmailView />} />
           <Route path="profile/:id" element={<ProfileView />} />
         </Route>
