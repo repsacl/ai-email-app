@@ -42,7 +42,7 @@ function Layout() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b sticky top-0 z-10 bg-background">
-        <div className="flex h-14 md:h-16 items-center justify-between px-3 md:px-6">
+        <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
@@ -145,7 +145,8 @@ function Layout() {
         
         {/* Fjernet padding på main-container for å unngå horisontal scroll */}
         <main className={`
-          flex-1 container py-4 md:py-6 max-w-full overflow-x-hidden mx-10
+          flex-1 container py-4 md:py-6 max-w-full overflow-x-hidden mx-3
+
           transition-all duration-300 ease-in-out
           ${sidebarOpen ? 'md:ml-[50px]' : 'md:ml-[50px]'}
         `}>
