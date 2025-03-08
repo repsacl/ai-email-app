@@ -7,6 +7,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail } from "lucide-react";
 
+import { Link } from 'react-router-dom';
+
 function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -71,10 +73,11 @@ function Login() {
           </Button>
         </CardContent>
         
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex justify-center flex-col">
           <p className="text-sm text-muted-foreground">
             Sikker tilgang til din Gmail-konto
           </p>
+          <Link to="/" className="text-sm text-primary hover:underline">Tilbake</Link>
         </CardFooter>
       </Card>
     </div>

@@ -1,6 +1,6 @@
 // src/pages/EmailView.jsx
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 
 import { Button } from "@/components/ui/button";
@@ -11,12 +11,63 @@ import { Avatar } from "@/components/ui/avatar";
 import { ArrowLeft, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
+// New EmailContent component that uses iframe to isolate HTML content
+function EmailContent({ htmlContent }) {
+  const iframeRef = useRef(null);
+  
+  useEffect(() => {
+    if (iframeRef.current) {
+      const doc = iframeRef.current.contentDocument;
+      doc.body.innerHTML = htmlContent || '<p>No content</p>';
+      
+      // Add base styling to iframe content
+      const style = doc.createElement('style');
+      style.textContent = `
+        body { 
+          font-family: system-ui, sans-serif; 
+          margin: 0; 
+          padding: 0; 
+          max-width: 100%;
+          word-break: break-word;
+          color: inherit;
+        }
+        img { max-width: 100%; height: auto; }
+        a { color: #0066cc; }
+        
+        /* Add dark mode support */
+        @media (prefers-color-scheme: dark) {
+          body { color: #e1e1e1; }
+          a { color: #3399ff; }
+        }
+      `;
+      doc.head.appendChild(style);
+      
+      // Adjust iframe height to content
+      iframeRef.current.style.height = `${doc.body.scrollHeight + 20}px`;
+    }
+  }, [htmlContent]);
+  
+  return (
+    <iframe
+      ref={iframeRef}
+      title="Email content"
+      className="w-full border-none"
+      style={{ 
+        minHeight: '150px',
+        width: '100%',
+        display: 'block'
+      }}
+      sandbox="allow-same-origin"
+    />
+  );
+}
+
 function EmailSkeleton() {
   return (
     <div className="space-y-4 p-3 md:p-6">
       <Button variant="ghost" disabled>
         <ArrowLeft className="h-4 w-4 mr-2" />
-        Tilbake
+        Back
       </Button>
       
       <div className="space-y-4">
@@ -45,36 +96,24 @@ function EmailSkeleton() {
 function EmailView({ id: propId, onBack, isEmbedded = false }) {
   const params = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const [email, setEmail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Bruk ID fra prop hvis tilgjengelig (innebygd modus), ellers fra URL-parametre
+  // Use ID from prop if available (embedded mode), otherwise from URL parameters
   const id = propId || params.id;
   
-  // Bestem riktig "tilbake" URL basert på modus
+  // Determine the correct "back" action based on mode
   const handleBack = () => {
     if (isEmbedded && onBack) {
-      onBack(); // Bruk callback i innebygd modus
+      onBack(); // Use callback in embedded mode
     } else {
-      // For frittstående modus, bruk routering
-      const backUrl = location.pathname.includes('/inbox/email') 
-        ? '/dashboard/inbox' 
-        : '/dashboard';
-      navigate(backUrl);
+      // For standalone mode, use routing
+      navigate('/dashboard');
     }
   };
 
   useEffect(() => {
-    // Oppdater isMobile når vindusstørrelsen endres
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
     async function fetchEmail() {
       if (!id) {
         setLoading(false);
@@ -84,7 +123,7 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
       try {
         setLoading(true);
         
-        // Hent e-postdetaljer fra Supabase
+        // Fetch email details from Supabase
         const { data, error } = await supabase
           .from('emails')
           .select('*')
@@ -95,19 +134,17 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
         
         setEmail(data);
       } catch (error) {
-        console.error('Feil ved henting av e-post:', error);
-        setError('Kunne ikke laste inn e-post. Vennligst prøv igjen senere.');
+        console.error('Error fetching email:', error);
+        setError('Could not load email. Please try again later.');
       } finally {
         setLoading(false);
       }
     }
     
     fetchEmail();
-    
-    return () => window.removeEventListener('resize', handleResize);
   }, [id]);
 
-  // Hjelpefunksjoner for visning av e-post
+  // Helper functions for displaying email
   function getInitialColor(name) {
     const colors = [
       "bg-red-500", "bg-blue-500", "bg-green-500", 
@@ -115,9 +152,9 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
       "bg-indigo-500", "bg-teal-500"
     ];
     
-    // Enkel hash-funksjon
+    // Simple hash function
     let hash = 0;
-    for (let i = 0; i < name.length; i++) {
+    for (let i = 0; i < name?.length || 0; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
     
@@ -145,17 +182,7 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
     
     const date = new Date(dateString);
     
-    // Forenklet format for mobil
-    if (isMobile) {
-      return date.toLocaleDateString([], { 
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
-    
-    // Fullt format for desktop
+    // Use responsive formatting based on component width instead of device size
     return date.toLocaleDateString([], { 
       weekday: 'long', 
       year: 'numeric', 
@@ -166,8 +193,8 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
     });
   }
 
-  // Bestem om vi skal vise innhold i en Card (frittstående) eller direkte (innebygd)
-  const EmailContent = () => {
+  // Determine if we should show content in a Card (standalone) or directly (embedded)
+  const EmailContentComponent = () => {
     if (loading) {
       return <EmailSkeleton />;
     }
@@ -183,7 +210,7 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
     if (!email) {
       return (
         <Alert>
-          <AlertDescription>E-post ikke funnet.</AlertDescription>
+          <AlertDescription>Email not found.</AlertDescription>
         </Alert>
       );
     }
@@ -193,11 +220,11 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
 
     return (
       <div className="p-3 md:p-6 space-y-4 md:space-y-6">
-        {/* Vis tilbake-knapp alltid i innebygd modus eller frittstående modus */}
+        {/* Only show back button in standalone mode */}
         {!isEmbedded && (
           <Button variant="ghost" onClick={handleBack} className="mb-2">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Tilbake
+            Back
           </Button>
         )}
 
@@ -205,43 +232,40 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
           <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{email.subject}</h1>
           
           <div className="flex gap-3 md:gap-4 items-start mb-4 md:mb-6">
-            <Avatar className={`${avatarColorClass} text-white h-8 w-8 md:h-10 md:w-10 flex items-center justify-center flex-shrink-0`}>
+            <Avatar className={`${avatarColorClass} text-white h-10 w-10 flex items-center justify-center flex-shrink-0`}>
               <span>{initials}</span>
             </Avatar>
             
             <div className="flex-1 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:justify-between">
                 <div className="overflow-hidden text-ellipsis">
                   <div className="font-medium text-lg truncate">
                     {email.from_name || email.from_email}
                   </div>
-                  <div className="text-xs md:text-sm text-muted-foreground truncate">
+                  <div className="text-sm text-muted-foreground truncate">
                     {email.from_email}
                   </div>
                 </div>
-                <div className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
+                <div className="text-sm text-muted-foreground whitespace-nowrap">
                   {formatDateTime(email.received_at)}
                 </div>
               </div>
               
-              <div className="mt-1 text-xs md:text-sm text-muted-foreground truncate">
-                Til: {email.to_email}
+              <div className="mt-1 text-sm text-muted-foreground truncate">
+                To: {email.to_email}
               </div>
             </div>
           </div>
           
           <Separator className="my-4 md:my-6" />
           
-          <div className="prose max-w-none dark:prose-invert text-sm md:text-base">
+          {/* Updated email content section with iframe isolation */}
+          <div className="prose max-w-none dark:prose-invert">
             {email.body_html ? (
-              <div 
-                dangerouslySetInnerHTML={{ __html: email.body_html }} 
-                className="overflow-x-auto"
-                style={{ maxWidth: '100%' }}
-              />
+              <EmailContent htmlContent={email.body_html} />
             ) : (
               <pre className="whitespace-pre-wrap font-sans">
-                {email.body_text || 'Ingen innhold'}
+                {email.body_text || 'No content'}
               </pre>
             )}
           </div>
@@ -250,16 +274,16 @@ function EmailView({ id: propId, onBack, isEmbedded = false }) {
     );
   };
 
-  // Hvis innebygd, returnerer vi bare innholdet
+  // If embedded, we just return the content
   if (isEmbedded) {
-    return <EmailContent />;
+    return <EmailContentComponent />;
   }
 
-  // Hvis frittstående, legger vi innholdet i et Card
+  // If standalone, we wrap the content in a Card
   return (
     <Card>
       <CardContent className="p-0">
-        <EmailContent />
+        <EmailContentComponent />
       </CardContent>
     </Card>
   );

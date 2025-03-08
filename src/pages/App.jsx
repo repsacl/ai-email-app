@@ -10,6 +10,7 @@ import Dashboard from './Dashboard';
 import Inbox from './Inbox';
 import EmailView from './EmailView';
 import ProfileView from './ProfileView';
+import Settings from './Settings';
 import Layout from '../components/Layout'
 
 import ErrorPage from './ErrorPage';
@@ -68,6 +69,7 @@ function App() {
           {/* Vi beholder EmailView-ruten for kompatibilitet, men hovedinteraksjonen vil være i Inbox */}
           <Route path="email/:id" element={<EmailView />} />
           <Route path="profile/:id" element={<ProfileView />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
