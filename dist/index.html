@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ai-email-app</title>
+
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  </script>
+
+  <script type="module" crossorigin src="/assets/index-CS5HrKV8.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BSqRxSxg.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>
