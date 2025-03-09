@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Mail, Menu, LogOut, Inbox, Settings, User, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import ThemeToggle from './ThemeToggle';
 
+import Footer from './Footer';
+
 function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -152,7 +154,10 @@ function Layout() {
         `}>
           <Outlet />
         </main>
+
       </div>
+
+      <Footer />
     </div>
   );
 }
