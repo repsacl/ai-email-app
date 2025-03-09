@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Mail, Calendar, User } from "lucide-react";
+import { ArrowLeft, Mail, Calendar, User, LogOut } from "lucide-react";
 
 function ProfileSkeleton() {
   return (
@@ -72,6 +72,18 @@ function ProfileView() {
     
     fetchUser();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await supabase.auth.signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error logging out:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   function formatDate(date) {
     if (!date) return 'Aldri';
@@ -240,6 +252,21 @@ function ProfileView() {
               <div className="font-medium">{user.app_metadata?.provider || 'Ukjent'}</div>
             </div>
           </div>
+
+          <Separator />
+          
+          <div className="p-4 mt-auto w-fit">
+              <Button 
+                variant="ghost" 
+                onClick={handleLogout} 
+                disabled={loading}
+                className="w-full justify-start"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                <span>Logg ut</span>
+              </Button>
+          </div>
+
         </div>
       </CardContent>
     </Card>
