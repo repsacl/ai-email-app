@@ -12,7 +12,7 @@ import EmailView from './EmailView';
 import ProfileView from './ProfileView';
 import Settings from './Settings';
 import Layout from '../components/Layout'
-
+import PrivacyPolicy from './PrivacyPolicy';
 import ErrorPage from './ErrorPage';
 
 import "../App.css"
@@ -71,6 +71,8 @@ function App() {
           <Route path="profile/:id" element={<ProfileView />} />
           <Route path="settings" element={<Settings />} />
         </Route>
+
+        <Route path="/personvernerklæring" element={<PrivacyPolicy />} />
 
         <Route path="*" element={<ErrorPage />} />
       </Routes>

@@ -4,7 +4,7 @@ import { useContext } from 'react';
 function Footer() {
   return (
     <footer className="w-full px-4 text-center transition-colors duration-200">
-      <p className="text-muted-foreground text-sm">&copy; 2025 Casper Landberg</p>
+          <p>© 2025 repsac. Alle rettigheter reservert.</p>
     </footer>
   );
 }
