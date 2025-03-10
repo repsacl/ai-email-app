@@ -45,7 +45,7 @@ function Layout() {
     <div className="min-h-screen bg-background">
       <header className="border-b sticky top-0 z-10 bg-background">
         <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-0">
             <Button 
               variant="ghost" 
               size="icon" 
