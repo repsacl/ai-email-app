@@ -18,29 +18,29 @@ function IntroPage() {
       title: "Smart Inbox",
       description: "Organiser automatisk e-postene dine basert på prioritet og type",
       icon: <Inbox className="h-6 w-6" />,
-      color: "bg-blue-500/20",
-      textColor: "text-blue-500"
+      color: "text-purple-500",
+      textColor: "text-[#535bf2]"
     },
     {
       title: "Sanntidssynkronisering",
       description: "Få øyeblikkelig varsling om nye e-poster på alle enheter",
       icon: <Clock className="h-6 w-6" />,
-      color: "bg-purple-500/20",
-      textColor: "text-purple-500"
+      color: "text-purple-500",
+      textColor: "text-[#535bf2]"
     },
     {
       title: "Sikkert og privat",
       description: "End-to-end kryptering beskytter dine sensitive meldinger",
       icon: <Shield className="h-6 w-6" />,
-      color: "bg-green-500/20",
-      textColor: "text-green-500"
+      color: "text-purple-500",
+      textColor: "text-[#535bf2]"
     },
     {
       title: "Lynrask ytelse",
       description: "Naviger og søk i tusenvis av e-poster uten forsinkelse",
       icon: <Zap className="h-6 w-6" />,
-      color: "bg-amber-500/20",
-      textColor: "text-amber-500"
+      color: "text-purple-500",
+      textColor: "text-[#535bf2]"
     }
   ];
 
@@ -75,7 +75,7 @@ function IntroPage() {
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
         >
-          <Mail className="h-12 w-12 text-primary" />
+          <img src="/logo.svg" alt="logo" className='w-15 logo'/>
         </motion.div>
       </div>
     );
@@ -91,16 +91,16 @@ function IntroPage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex p-4 rounded-full bg-primary/10 backdrop-blur-sm"
+            className="inline-flex p-4 rounded-full"
           >
-            <Mail className="h-16 w-16 text-primary" />
+              <img src="/logo.svg" alt="logo" className='w-40 logo'/>
           </motion.div>
           
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-6xl md:text-8xl font-bold tracking-tight"
+            className="text-6xl md:text-8xl font-bold tracking-tight -mt-10"
           >
             repsac
           </motion.h1>
@@ -153,7 +153,7 @@ function IntroPage() {
           transition={{ delay: 1, duration: 0.8 }}
           className="relative rounded-xl overflow-hidden max-w-4xl mx-auto mb-16 shadow-2xl"
         >
-          <div className="aspect-[16/9] bg-gradient-to-tr from-primary/40 to-blue-900/90 flex items-center justify-center">
+          <div className="aspect-[16/4] bg-gradient-to-tr from-primary/40 to-blue-800 flex items-center justify-center">
             <div className="px-6 py-12 text-center text-white">
               <h2 className="text-3xl font-bold mb-4">Effektiv e-posthåndtering</h2>
               <p className="text-lg text-white/90 mb-6 max-w-xl mx-auto">

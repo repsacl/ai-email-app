@@ -12,3 +12,14 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 } */
+
+
+.logo {
+  filter: invert(0%); /* Standard for mørk logo på lys bakgrunn */
+
+  transition: filter 0.2s ease-in-out;
+}
+
+.dark .logo {
+  filter: invert(100%); /* Inverterer til lys logo på mørk bakgrunn */
+}
